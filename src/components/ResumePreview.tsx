@@ -15,7 +15,11 @@ import { Download, FileDown, FileText, Info } from "lucide-react";
 import AtsTemplate from "./resume-templates/AtsTemplate";
 import html2pdf from "html2pdf.js";
 
-const ResumePreview = () => {
+interface ResumePreviewProps {
+  scale?: number;
+}
+
+const ResumePreview = ({ scale = 1 }: ResumePreviewProps) => {
   const { resumeData, saveResumeData } = useResume();
   const resumeRef = useRef<HTMLDivElement>(null);
   const [jobDescription, setJobDescription] = useState("");
@@ -82,7 +86,11 @@ const ResumePreview = () => {
 
         <TabsContent value="preview" className="mt-0">
           <Card className="overflow-auto bg-white rounded-md shadow-md resume-drop-shadow p-0">
-            <div ref={resumeRef} className="bg-white p-6 min-h-[29.7cm] w-[21cm] mx-auto">
+            <div 
+              ref={resumeRef} 
+              className="bg-white p-6 min-h-[29.7cm] w-[21cm] mx-auto"
+              style={{ transform: `scale(${scale})`, transformOrigin: 'top center' }}
+            >
               <AtsTemplate resumeData={resumeData} />
             </div>
           </Card>
