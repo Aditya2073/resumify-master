@@ -11,15 +11,16 @@ import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { calculateATSScore } from "@/utils/resumeUtils";
 
-import { Download, FileDown, FileText, Info } from "lucide-react";
+import { Download, FileText, Info } from "lucide-react";
 import AtsTemplate from "./resume-templates/AtsTemplate";
 import html2pdf from "html2pdf.js";
 
 interface ResumePreviewProps {
   scale?: number;
+  simplified?: boolean;
 }
 
-const ResumePreview = ({ scale = 1 }: ResumePreviewProps) => {
+const ResumePreview = ({ scale = 1, simplified = false }: ResumePreviewProps) => {
   const { resumeData, saveResumeData } = useResume();
   const resumeRef = useRef<HTMLDivElement>(null);
   const [jobDescription, setJobDescription] = useState("");
@@ -34,7 +35,7 @@ const ResumePreview = ({ scale = 1 }: ResumePreviewProps) => {
     const resumeElement = resumeRef.current;
     const options = {
       margin: [0.3, 0.3, 0.3, 0.3],
-      filename: `${resumeData.contactInfo.fullName.replace(/\s+/g, "_")}_Resume.pdf`,
+      filename: `${resumeData.contactInfo.fullName.replace(/\s+/g, "_") || "Resume"}_Resume.pdf`,
       image: { type: "jpeg", quality: 1 },
       html2canvas: { scale: 2, useCORS: true, logging: false },
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
@@ -64,11 +65,30 @@ const ResumePreview = ({ scale = 1 }: ResumePreviewProps) => {
     setAtsAnalysisOpen(true);
   };
 
+  // If simplified is true, only render the resume content without tabs or buttons
+  if (simplified) {
+    return (
+      <div 
+        className="bg-white shadow-sm border border-gray-100 rounded-md overflow-hidden"
+        style={{ 
+          transform: `scale(${scale})`, 
+          transformOrigin: 'top center',
+          height: scale < 1 ? '500px' : 'auto',
+          overflow: 'hidden'
+        }}
+      >
+        <div ref={resumeRef} className="bg-white p-4 w-full h-full">
+          <AtsTemplate resumeData={resumeData} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full max-w-6xl mx-auto animate-fade-in">
       <Tabs defaultValue="preview" className="w-full">
-        <div className="flex justify-between items-center mb-6">
-          <TabsList>
+        <div className="flex justify-between items-center mb-4">
+          <TabsList className="bg-gray-100">
             <TabsTrigger value="preview">Preview</TabsTrigger>
             <TabsTrigger value="ats-optimization">ATS Optimization</TabsTrigger>
           </TabsList>

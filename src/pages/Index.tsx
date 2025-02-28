@@ -12,6 +12,7 @@ import SkillsForm from "@/components/SkillsForm";
 import ProjectsForm from "@/components/ProjectsForm";
 import ResumePreview from "@/components/ResumePreview";
 import { useToast } from "@/components/ui/use-toast";
+import { Download, ArrowLeft, ArrowRight } from "lucide-react";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("contact");
@@ -89,7 +90,7 @@ const Index = () => {
                   <TabsContent value="preview">
                     <div className="flex flex-col items-center">
                       <h2 className="text-2xl font-bold mb-6">Resume Preview</h2>
-                      <div className="mb-6">
+                      <div className="mb-6 w-full">
                         <ResumePreview />
                       </div>
                     </div>
@@ -100,26 +101,31 @@ const Index = () => {
                       variant="outline"
                       onClick={handlePrevTab}
                       disabled={activeTab === "contact"}
+                      className="flex items-center"
                     >
+                      <ArrowLeft className="h-4 w-4 mr-2" />
                       Previous
                     </Button>
                     {activeTab !== "preview" ? (
-                      <Button onClick={handleNextTab}>
+                      <Button onClick={handleNextTab} className="flex items-center">
                         Next
+                        <ArrowRight className="h-4 w-4 ml-2" />
                       </Button>
                     ) : (
                       <Button 
                         variant="default" 
                         onClick={() => {
-                          const previewComponent = document.getElementById('resume-preview');
-                          if (previewComponent) {
+                          const resumePreviewComponent = document.getElementById('resume-preview');
+                          if (resumePreviewComponent) {
                             toast({
                               title: "Generating PDF",
                               description: "Your resume is being prepared for download"
                             });
                           }
                         }}
+                        className="flex items-center"
                       >
+                        <Download className="h-4 w-4 mr-2" />
                         Download PDF
                       </Button>
                     )}
@@ -132,8 +138,8 @@ const Index = () => {
           <div className="hidden lg:block">
             <div className="sticky top-8">
               <h2 className="text-2xl font-bold mb-4">Live Preview</h2>
-              <div className="border border-border rounded-lg p-4 resume-drop-shadow bg-white">
-                <ResumePreview scale={0.6} />
+              <div className="border border-border rounded-lg p-4 resume-drop-shadow bg-white flex items-center justify-center">
+                <ResumePreview scale={0.6} simplified={true} />
               </div>
             </div>
           </div>
